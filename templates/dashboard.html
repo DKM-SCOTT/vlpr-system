@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - VLPR System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+      }
+
+      body {
+        background: #f8f9fa;
+      }
+
+      .navbar {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .dashboard-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .stat-label {
+        color: #666;
+        margin: 0;
+      }
+
+      .plate-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s;
+      }
+
+      .plate-card:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .plate-thumbnail {
+        width: 100px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+
+      .progress {
+        height: 8px;
+        width: 100px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+      }
+
+      .empty-state i {
+        font-size: 60px;
+        color: #ddd;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-car"></i> VLPR System
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}">
+                <i class="fas fa-home"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('detect') }}">
+                <i class="fas fa-camera"></i> Detect
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('search') }}">
+                <i class="fas fa-search"></i> Search
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('profile') }}">
+                <i class="fas fa-user"></i> Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2>
+              <i class="fas fa-tachometer-alt me-2"></i>Welcome, {{
+              current_user.username }}!
+            </h2>
+            <p class="mb-0">
+              Manage your detected license plates and view statistics
+            </p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <a href="{{ url_for('detect') }}" class="btn btn-light btn-lg">
+              <i class="fas fa-plus-circle me-2"></i>New Detection
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="container mb-4">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-images"></i>
+            </div>
+            <div class="stat-value">{{ plates|length }}</div>
+            <p class="stat-label">Total Detections</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="background: linear-gradient(135deg, #43e97b, #38f9d7)"
+            >
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-value">{{ today_count }}</div>
+            <p class="stat-label">Today's Detections</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="background: linear-gradient(135deg, #fa709a, #fee140)"
+            >
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value">
+              {{ "%.1f"|format(avg_confidence * 100) }}%
+            </div>
+            <p class="stat-label">Avg. Confidence</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Detections -->
+    <div class="container">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h4 class="mb-0">
+            <i class="fas fa-history me-2 text-primary"></i>Recent Detections
+          </h4>
+        </div>
+        <div class="card-body">
+          {% if plates %} {% for plate in plates[:10] %}
+          <div class="plate-card">
+            <div class="row align-items-center">
+              <div class="col-md-1">
+                {% if plate.plate_image_path %}
+                <img
+                  src="{{ plate.plate_image_path }}"
+                  class="plate-thumbnail"
+                  alt="Plate"
+                />
+                {% endif %}
+              </div>
+              <div class="col-md-3">
+                <strong>{{ plate.plate_number }}</strong>
+              </div>
+              <div class="col-md-3">
+                <i class="far fa-clock me-2 text-muted"></i>
+                {{ plate.detected_at.strftime('%Y-%m-%d %H:%M') }}
+              </div>
+              <div class="col-md-2">
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-success"
+                    style="width: {{ plate.confidence * 100 }}%"
+                  ></div>
+                </div>
+                <small>{{ "%.1f"|format(plate.confidence * 100) }}%</small>
+              </div>
+              <div class="col-md-3 text-end">
+                <a
+                  href="{{ url_for('plate_detail', plate_id=plate.id) }}"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  <i class="fas fa-eye"></i> View
+                </a>
+                <button
+                  class="btn btn-sm btn-outline-danger delete-plate"
+                  data-plate-id="{{ plate.id }}"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% if plates|length > 10 %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+              View All Detections
+            </a>
+          </div>
+          {% endif %} {% else %}
+          <div class="empty-state">
+            <i class="fas fa-images"></i>
+            <h5>No Detections Yet</h5>
+            <p class="text-muted">
+              Start by detecting your first license plate!
+            </p>
+            <a href="{{ url_for('detect') }}" class="btn btn-primary">
+              <i class="fas fa-camera me-2"></i>Detect Now
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Delete</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Are you sure you want to delete this detection? This action cannot
+              be undone.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-danger" id="confirmDelete">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Delete functionality
+      let deleteId = null;
+      const deleteModal = new bootstrap.Modal(
+        document.getElementById("deleteModal")
+      );
+
+      document.querySelectorAll(".delete-plate").forEach((button) => {
+        button.addEventListener("click", function () {
+          deleteId = this.dataset.plateId;
+          deleteModal.show();
+        });
+      });
+
+      document.getElementById("confirmDelete").onclick = function () {
+        if (deleteId) {
+          fetch(`/delete_plate/${deleteId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                location.reload();
+              } else {
+                alert("Error deleting plate");
+              }
+            });
+          deleteModal.hide();
+        }
+      };
+    </script>
+  </body>
+</html>

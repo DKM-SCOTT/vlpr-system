@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VLPR System - Home</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .navbar {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .hero-section {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 100px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>')
+          bottom no-repeat;
+        background-size: cover;
+      }
+
+      .hero-image {
+        animation: float 3s ease-in-out infinite;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 30px;
+      }
+
+      .step-card {
+        text-align: center;
+        padding: 30px;
+        position: relative;
+      }
+
+      .step-number {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      footer {
+        background: #212529;
+        color: white;
+        padding: 30px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-car"></i> VLPR System
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/">Home</a>
+            </li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('detect') }}">
+                <i class="fas fa-camera"></i> Detect
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('search') }}">
+                <i class="fas fa-search"></i> Search
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('profile') }}">
+                <i class="fas fa-user"></i> Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">
+                <i class="fas fa-sign-in-alt"></i> Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}">
+                <i class="fas fa-user-plus"></i> Register
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container position-relative">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+              Vehicle License Plate Recognition System
+            </h1>
+            <p class="lead mb-4">
+              Advanced AI-powered system for automatic license plate detection
+              and recognition using Haar Cascade technology. Fast, accurate, and
+              secure.
+            </p>
+            {% if not current_user.is_authenticated %}
+            <div class="d-grid gap-3 d-sm-flex">
+              <a
+                href="{{ url_for('register') }}"
+                class="btn btn-light btn-lg px-5"
+              >
+                <i class="fas fa-user-plus me-2"></i>Get Started
+              </a>
+              <a
+                href="{{ url_for('login') }}"
+                class="btn btn-outline-light btn-lg px-5"
+              >
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+              </a>
+            </div>
+            {% else %}
+            <div class="d-grid gap-3 d-sm-flex">
+              <a
+                href="{{ url_for('dashboard') }}"
+                class="btn btn-light btn-lg px-5"
+              >
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
+              <a
+                href="{{ url_for('detect') }}"
+                class="btn btn-outline-light btn-lg px-5"
+              >
+                <i class="fas fa-camera me-2"></i>Detect Plate
+              </a>
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-lg-6">
+            <img
+              src="static/images/dashboard.jpeg"
+              images
+              alt="VLPR Illustration"
+              class="img-fluid hero-image"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5 fw-bold">Key Features</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-camera-retro"></i>
+              </div>
+              <h3>Real-time Detection</h3>
+              <p class="text-muted">
+                Capture and detect license plates in real-time using your camera
+                or uploaded images.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <h3>Advanced AI Model</h3>
+              <p class="text-muted">
+                Powered by Haar Cascade classifier specifically trained for
+                Russian license plates.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-database"></i>
+              </div>
+              <h3>Secure Storage</h3>
+              <p class="text-muted">
+                All detected plates are securely stored in your personal
+                database for future reference.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-5 fw-bold">How It Works</h2>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+              <h4>Create Account</h4>
+              <p class="text-muted">Register for free to access the system</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+              <h4>Upload Image</h4>
+              <p class="text-muted">Capture or upload vehicle image</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+              <h4>AI Detection</h4>
+              <p class="text-muted">Our model detects and extracts the plate</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="step-card">
+              <div class="step-number">4</div>
+              <i class="fas fa-save fa-3x text-primary mb-3"></i>
+              <h4>Save & Review</h4>
+              <p class="text-muted">Save results and review history</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container text-center">
+        <p class="mb-0">&copy; 2024 VLPR System. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
